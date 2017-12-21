@@ -4,9 +4,16 @@ import os
 from bs4 import BeautifulSoup
 
 
+IGNORED_FOLDERS = [
+    '.git',
+    '_site',
+]
+
+
 def get_all_html_files():
     filenames = []
     for root, dirs, files in os.walk("."):
+        dirs[:] = [d for d in dirs if d not in IGNORED_FOLDERS]
         for file in files:
             if file.endswith(".html"):
                 filenames.append(os.path.join(root, file))
@@ -28,8 +35,8 @@ def process(filename):
                 if link.endswith('.1.html'):
                     link = link.replace('.1.html', '/')
 
-                if link.startswith('index.html'):
-                    link = link.replace('index.html', '/')
+                if link.endswith('/index.html'):
+                    link = link.replace('index.html', '')
 
                 link = '/{0}'.format(link.lstrip('/'))
 
